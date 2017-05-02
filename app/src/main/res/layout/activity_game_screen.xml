@@ -1,0 +1,84 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EBEBEB"
+    android:id="@+id/gamescreen"
+
+    tools:context="com.spencermwatts.colorspin.GameScreenActivity">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+
+    <Button
+        app:layout_constraintDimensionRatio="1:1"
+        android:background="@drawable/blue_color_button"
+        android:id="@+id/blue_button"
+        app:layout_constraintRight_toLeftOf="@+id/yellow_button"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="44dp"
+        android:layout_height="64dp"
+        android:layout_width="64dp"
+        android:transitionName="blue_button_transition"
+        android:stateListAnimator="@animator/button_animator"
+        />
+
+    <Button
+        android:background="@drawable/red_color_button"
+        android:id="@+id/red_button"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/yellow_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="44dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_height="64dp"
+        android:layout_width="64dp"
+        android:transitionName="red_button_transition"
+        android:stateListAnimator="@animator/button_animator"
+        />
+
+    <Button
+        android:background="@drawable/yellow_color_button"
+        android:id="@+id/yellow_button"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginBottom="60dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:transitionName="yellow_button_transition"
+        android:stateListAnimator="@animator/button_animator"
+        />
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:srcCompat="@drawable/shape"
+        android:id="@+id/playshape"
+        app:layout_constraintBottom_toTopOf="@+id/yellow_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:background="@drawable/shim"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</android.support.constraint.ConstraintLayout>

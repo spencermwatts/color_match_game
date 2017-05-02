@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Color Spin</string>
+
+    <string name="title_activity_game_screen">GameScreen</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="yellow_transition">yellow_transition</string>
+</resources>
