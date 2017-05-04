@@ -17,15 +17,11 @@ public class GameInstance {
 
     private static final int[] COLORS = new int[] {
             R.color.dark_green,
-            R.color.dark_teal,
             R.color.dark_purple,
             R.color.dark_gold,
-            R.color.dark_red,
             R.color.core_green,
-            R.color.core_teal,
             R.color.core_purple,
             R.color.core_gold,
-            R.color.core_red,
             R.color.bright_green,
             R.color.bright_teal,
             R.color.bright_purple,
@@ -42,7 +38,7 @@ public class GameInstance {
     public GameInstance() {
 
         Random rand = new Random();
-        int randomIndex = rand.nextInt(19);
+        int randomIndex = rand.nextInt(COLORS.length-1);
 
         mTargetColorResourceID = COLORS[randomIndex];
 

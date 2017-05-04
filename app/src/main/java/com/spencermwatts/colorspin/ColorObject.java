@@ -11,12 +11,12 @@ public class ColorObject {
     int mRed;
     int mGreen;
     int mBlue;
-    int step = 5;
+    int step = 10;
 
     public ColorObject() {
-        mRed = 255;
-        mGreen = 255;
-        mBlue = 255;
+        mRed = 250;
+        mGreen = 250;
+        mBlue = 250;
     }
 
     public int getRed() {

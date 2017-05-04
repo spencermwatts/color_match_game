@@ -60,6 +60,24 @@
         android:stateListAnimator="@animator/button_animator"
         />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/undo_button"
+        app:layout_constraintBottom_toTopOf="@id/red_button"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginBottom="24dp"
+        android:layout_marginRight="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:transitionName="yellow_button_transition"
+        android:stateListAnimator="@animator/button_animator"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        app:backgroundTint="@color/dark_grey"
+        android:src="@drawable/ic_replay_black_24dp"
+        app:fabSize="mini"/>
+
     <ImageView
         android:layout_width="64dp"
         android:layout_height="64dp"

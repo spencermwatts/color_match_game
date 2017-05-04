@@ -69,15 +69,12 @@ public class StartPageActivity extends AppCompatActivity {
          */
         //// TODO: 4/30/17 Create jiggle animation for three buttons
 
-//        ScaleAnimation jiggle = new Translate(15, 0, 15, 0, Animation.RELATIVE_TO_SELF, .5F, Animation.RELATIVE_TO_SELF, .5F);
 
         final RelativeLayout button_container = (RelativeLayout)findViewById(R.id.button_container);
 
         AnimatorSet rotation_animation = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.logo_spin);
         rotation_animation.setTarget(button_container);
         rotation_animation.start();
-
-        // Animation for start button
 
 
         final Button start_button = (Button)findViewById(R.id.start_button);
@@ -98,9 +95,10 @@ public class StartPageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent start_game = new Intent(StartPageActivity.this, GameScreenActivity.class);
 
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(StartPageActivity.this, p1, p2, p3);
-
-                StartPageActivity.this.startActivity(start_game, options.toBundle());
+                // Comment back in the next two lines in order for the three logo orbs to transition to the next activity
+//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(StartPageActivity.this, p1, p2, p3);
+//                StartPageActivity.this.startActivity(start_game, options.toBundle());
+                StartPageActivity.this.startActivity(start_game);
 
                             }
         });

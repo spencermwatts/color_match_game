@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">@color/light_grey</color>
+    <color name="colorPrimaryDark">@color/light_grey</color>
+    <color name="colorAccent">@color/light_grey</color>
+
+    <color name="light_grey">#ECECEC</color>
+    <color name="dark_grey">#D8D8D8</color>
 
     <color name="black_overlay">#ececec</color>
 
@@ -11,28 +14,28 @@
     <color name="game_red">#FA646E</color>
     <color name="game_yellow">#FEB92B</color>
 
-    <color name="dark_green">#37C396</color>
-    <color name="dark_teal">#199BB9</color>
-    <color name="dark_purple">#504BA5</color>
+    <color name="dark_green">#3CC896</color>
+    <color name="dark_teal">#1EA0BE</color>
+    <color name="dark_purple">#5050AA</color>
     <color name="dark_gold">#FF9B00</color>
     <color name="dark_red">#E63C3C</color>
 
-    <color name="core_green">#3CE6AF</color>
-    <color name="core_teal">#19AFD2</color>
-    <color name="core_purple">#6969CD</color>
-    <color name="core_gold">#FFB900</color>
-    <color name="core_red">#FA6469</color>
+    <color name="core_green">#3CE6B4</color>
+    <color name="core_teal">#1EB4D2</color>
+    <color name="core_purple">#6E6ED2</color>
+    <color name="core_gold">#FABE00</color>
+    <color name="core_red">#FA646E</color>
 
-    <color name="bright_green">#3CF5D2</color>
-    <color name="bright_teal">#00CDFF</color>
-    <color name="bright_purple">#A078FF</color>
-    <color name="bright_gold">#FFD200</color>
-    <color name="bright_red">#FF6E91</color>
+    <color name="bright_green">#3CFAD2</color>
+    <color name="bright_teal">#00D2FF</color>
+    <color name="bright_purple">#A078FA</color>
+    <color name="bright_gold">#FAD200</color>
+    <color name="bright_red">#FF6E96</color>
 
-    <color name="medium_green">#82E6FF</color>
-    <color name="medium_teal">#82E6FF</color>
-    <color name="medium_purple">#D2B9FF</color>
-    <color name="medium_gold">#FFE67D</color>
-    <color name="medium_red">#FFB4C8</color>
+    <color name="medium_green">#A0FAE6</color>
+    <color name="medium_teal">#82E6FA</color>
+    <color name="medium_purple">#D2BEFA</color>
+    <color name="medium_gold">#FAE682</color>
+    <color name="medium_red">#FAB4C8</color>
 
 </resources>

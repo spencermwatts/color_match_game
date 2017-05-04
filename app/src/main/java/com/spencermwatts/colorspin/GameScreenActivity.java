@@ -7,6 +7,8 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,11 +20,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.Random;
+import java.util.Stack;
 
 import static com.spencermwatts.colorspin.R.color.core_gold;
 import static com.spencermwatts.colorspin.R.color.core_green;
@@ -38,6 +42,10 @@ import static com.spencermwatts.colorspin.R.color.game_red;
  */
 public class GameScreenActivity extends AppCompatActivity {
 
+    /**
+     * Create a stack to hold the history of color changes
+     */
+    Stack<Integer> colorHistory = new Stack<Integer>();
     /**
      * Initiate a integer to hold the curent API version in order to tell us if we can hide navigation or not
      */
@@ -169,8 +177,13 @@ public class GameScreenActivity extends AppCompatActivity {
 
         final GameInstance game = new GameInstance();
 
-        Log.e("BACKGROUND IS " , String.valueOf(game.getTargetColor()));
+
+        Log.e("BACKGROUND IS  " , String.valueOf(Integer.toHexString(getColor(game.getTargetColor()))));
         mContentView.setBackgroundColor(getColor(game.getTargetColor()));
+        // Put the
+
+
+
 
         /////// Set On Click Listeners for buttons ////////////////////////////////////////////////
 
@@ -179,34 +192,51 @@ public class GameScreenActivity extends AppCompatActivity {
         Button red_button = (Button)findViewById(R.id.red_button);
         Button yellow_button = (Button)findViewById(R.id.yellow_button);
         Button blue_button = (Button)findViewById(R.id.blue_button);
+        FloatingActionButton undo_button = (FloatingActionButton)findViewById(R.id.undo_button);
 
+        // todo change the color of the reverse arrow and animate it
         final ColorObject playShapeColor = new ColorObject();
 
-
-        play_shape.setBackgroundColor(
-                    Color.rgb(
-                            playShapeColor.getRed(),
-                            playShapeColor.getGreen(),
-                            playShapeColor.getBlue()
-                    )
+        // Make a variable that holds the white value for the initial shape color
+        int initial_color = Color.rgb(
+                playShapeColor.getRed(),
+                playShapeColor.getGreen(),
+                playShapeColor.getBlue()
         );
+        // Set the shape to that color
+        play_shape.setBackgroundColor(initial_color);
+        // Add that color to the history of the shape
+        colorHistory.push(initial_color);
 
         red_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                /// Subtracts GREEN
-                play_shape.setBackgroundColor(
-                        Color.rgb(
-                                playShapeColor.getRed(),
-                                playShapeColor.stepGreen(playShapeColor.getGreen()),
-                                playShapeColor.getBlue()
-                        )
-                );
-                Log.e("COLOR OBJ RED IS NOW " , String.valueOf(playShapeColor.getRed()));
-                Log.e("COLOR OBJ BLUE IS NOW " , String.valueOf(playShapeColor.getGreen()));
-                Log.e("COLOR OBJ BLUE IS NOW " , String.valueOf(playShapeColor.getBlue()));
 
+                /*
+                Users can only go 30 past the R G or B value of the target color.
+
+                Once they go 30 past any of those values, they are given the option to reverse
+                the steps up to twenty before the color value.
+
+                Example: if the R value of a target color is 50, a user can go to R value 20
+                at which point they are given the option to go to up to R value 80.
+
+                At R value 20, a reverse logo appears in the button.
+
+                At r value 80, the reverse logo disappears.
+                 */
+
+
+                /// Subtracts GREEN
+                int new_color = Color.rgb(
+                        playShapeColor.getRed(),
+                        playShapeColor.stepGreen(playShapeColor.getGreen()),
+                        playShapeColor.getBlue()
+                );
+                play_shape.setBackgroundColor(new_color);
+                // // TODO: 5/3/17 Add the new color to the history list
+                colorHistory.push(new_color);
             }
         });
 
@@ -215,17 +245,13 @@ public class GameScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 /// Subtracts RED
-                play_shape.setBackgroundColor(
-                        Color.rgb(
-                                playShapeColor.stepRed(playShapeColor.getRed()),
-                                playShapeColor.getGreen(),
-                                playShapeColor.getBlue()
-                        )
+                int new_color = Color.rgb(
+                        playShapeColor.stepRed(playShapeColor.getRed()),
+                        playShapeColor.getGreen(),
+                        playShapeColor.getBlue()
                 );
-                Log.e("COLOR OBJ RED IS NOW " , String.valueOf(playShapeColor.getRed()));
-                Log.e("COLOR OBJ BLUE IS NOW " , String.valueOf(playShapeColor.getGreen()));
-                Log.e("COLOR OBJ BLUE IS NOW " , String.valueOf(playShapeColor.getBlue()));
-
+                play_shape.setBackgroundColor(new_color);
+                colorHistory.push(new_color);
             }
         });
 
@@ -234,19 +260,47 @@ public class GameScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 /// Subtracts BLUE
-//                play_shape.setBackgroundColor(getColor(core_gold));
-                play_shape.setBackgroundColor(
-                        Color.rgb(
+                int new_color = Color.rgb(
                                 playShapeColor.getRed(),
                                 playShapeColor.getGreen(),
                                 playShapeColor.stepBlue(playShapeColor.getBlue())
-                        )
-                );
+                        );
 
-                Log.e("COLOR OBJ RED IS NOW " , String.valueOf(playShapeColor.getRed()));
-                Log.e("COLOR OBJ BLUE IS NOW " , String.valueOf(playShapeColor.getGreen()));
-                Log.e("COLOR OBJ BLUE IS NOW " , String.valueOf(playShapeColor.getBlue()));
+                play_shape.setBackgroundColor(new_color);
+                colorHistory.push(new_color);
 
+
+            }
+        });
+
+        undo_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // go back X amount in hisotry and set the color of the play shape to that
+                // Get size of history
+                int history_size = colorHistory.size() - 5;
+                int newUndoColor = colorHistory.get(history_size);
+                colorHistory.removeAllElements();
+                play_shape.setBackgroundColor(newUndoColor);
+                // // TODO: 5/4/17 reset the actual color object with the new undone color, otherwise the next time a user presses the color button, that colr will just jump back to where it was.
+                // TODO animate the undo button into the screen
+
+            }
+        });
+
+
+
+
+    //// Set onclick listener to make the play shape a back button for testing purposes
+        play_shape.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent go_back_home = new Intent(GameScreenActivity.this, StartPageActivity.class);
+
+                // Comment back in the next two lines in order for the three logo orbs to transition to the next activity
+//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(StartPageActivity.this, p1, p2, p3);
+//                StartPageActivity.this.startActivity(start_game, options.toBundle());
+                GameScreenActivity.this.startActivity(go_back_home);
 
             }
         });
@@ -254,9 +308,10 @@ public class GameScreenActivity extends AppCompatActivity {
         ///////////////////////////////////////////////////////////////////////////////////////////
 
 
+    //// Set animation for buttons entering screen
+        animateButtonsIntoScreen();
 
-
-
+    //// Set play shape animations
 
 
         ScaleAnimation scale_animation = new ScaleAnimation(5, 5, 5, 5, Animation.RELATIVE_TO_SELF, .5F, Animation.RELATIVE_TO_SELF, .5F);
@@ -266,12 +321,57 @@ public class GameScreenActivity extends AppCompatActivity {
         play_shape.startAnimation(scale_animation);
 
 
-
         AnimatorSet rotation_animation = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.logo_spin);
         rotation_animation.setTarget(play_shape);
         rotation_animation.start();
 
 
+
+    }
+
+    public void animateButtonsIntoScreen() {
+        View yellow_button = findViewById(R.id.yellow_button);
+        View red_button = findViewById(R.id.red_button);
+        View blue_button = findViewById(R.id.blue_button);
+
+        TranslateAnimation enterScreenBlue = new TranslateAnimation(
+                Animation.ABSOLUTE, 0F,
+                Animation.ABSOLUTE, 0F,
+                Animation.RELATIVE_TO_SELF, 2.5F,
+                Animation.RELATIVE_TO_SELF, 0F
+
+        );
+
+        TranslateAnimation enterScreenYellow = new TranslateAnimation(
+                Animation.ABSOLUTE, 0F,
+                Animation.ABSOLUTE, 0F,
+                Animation.RELATIVE_TO_SELF, 2.5F,
+                Animation.RELATIVE_TO_SELF, 0F
+
+        );
+
+        TranslateAnimation enterScreenRed = new TranslateAnimation(
+                Animation.ABSOLUTE, 0F,
+                Animation.ABSOLUTE, 0F,
+                Animation.RELATIVE_TO_SELF, 2.5F,
+                Animation.RELATIVE_TO_SELF, 0F
+
+        );
+
+        enterScreenBlue.setStartOffset(650);
+        enterScreenYellow.setStartOffset(700);
+        enterScreenRed.setStartOffset(750);
+        enterScreenBlue.setDuration(300);
+        enterScreenYellow.setDuration(250);
+        enterScreenRed.setDuration(300);
+        enterScreenBlue.setInterpolator(new LinearOutSlowInInterpolator());
+        enterScreenYellow.setInterpolator(new LinearOutSlowInInterpolator());
+        enterScreenRed.setInterpolator(new LinearOutSlowInInterpolator());
+
+
+        yellow_button.startAnimation(enterScreenYellow);
+        red_button.startAnimation(enterScreenRed);
+        blue_button.startAnimation(enterScreenBlue);
 
     }
 
