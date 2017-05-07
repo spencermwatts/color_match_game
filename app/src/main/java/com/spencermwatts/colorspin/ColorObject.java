@@ -1,5 +1,7 @@
 package com.spencermwatts.colorspin;
 
+import android.graphics.Color;
+
 /**
  * Created by smw on 5/1/17.
  */
@@ -56,5 +58,10 @@ public class ColorObject {
             this.mBlue = mBlue - step;
             return mBlue;
         }
+    }
+    public void undoColor(int undoColor){
+        mRed = Color.red(undoColor);
+        mBlue = Color.blue(undoColor);
+        mGreen = Color.green(undoColor);
     }
 }

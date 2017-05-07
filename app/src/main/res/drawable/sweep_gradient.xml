@@ -7,9 +7,9 @@
                 android:endColor="@color/bright_red"
                 android:startColor="@color/dark_green"
                 android:type="sweep"
-                android:angle="35"
-                android:centerX="0"
-                android:centerY="0"
+                android:angle="115"
+                android:centerX="0.5"
+                android:centerY="1.05"
                 android:gradientRadius="1000dp"
                 android:useLevel="false" />
         </shape>

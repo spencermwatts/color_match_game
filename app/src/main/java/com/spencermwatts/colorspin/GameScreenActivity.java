@@ -3,11 +3,11 @@ package com.spencermwatts.colorspin;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,22 +19,17 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
-import java.util.Random;
 import java.util.Stack;
 
-import static com.spencermwatts.colorspin.R.color.core_gold;
-import static com.spencermwatts.colorspin.R.color.core_green;
-import static com.spencermwatts.colorspin.R.color.core_purple;
-import static com.spencermwatts.colorspin.R.color.core_red;
-import static com.spencermwatts.colorspin.R.color.core_teal;
-import static com.spencermwatts.colorspin.R.color.dark_green;
-import static com.spencermwatts.colorspin.R.color.game_red;
+import static android.view.View.GONE;
+import static java.lang.Math.abs;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -42,6 +37,8 @@ import static com.spencermwatts.colorspin.R.color.game_red;
  */
 public class GameScreenActivity extends AppCompatActivity {
 
+
+    private int has_won;
     /**
      * Create a stack to hold the history of color changes
      */
@@ -126,6 +123,12 @@ public class GameScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
+        ///// Hide the button start game again button
+
+
+
+
+
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -189,10 +192,10 @@ public class GameScreenActivity extends AppCompatActivity {
 
         final ImageView play_shape = (ImageView) findViewById(R.id.playshape);
 
-        Button red_button = (Button)findViewById(R.id.red_button);
-        Button yellow_button = (Button)findViewById(R.id.yellow_button);
-        Button blue_button = (Button)findViewById(R.id.blue_button);
-        FloatingActionButton undo_button = (FloatingActionButton)findViewById(R.id.undo_button);
+        final Button red_button = (Button)findViewById(R.id.red_button);
+        final Button yellow_button = (Button)findViewById(R.id.yellow_button);
+        final Button blue_button = (Button)findViewById(R.id.blue_button);
+        final FloatingActionButton undo_button = (FloatingActionButton)findViewById(R.id.undo_button);
 
         // todo change the color of the reverse arrow and animate it
         final ColorObject playShapeColor = new ColorObject();
@@ -212,63 +215,62 @@ public class GameScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                if(has_won == 1) {
+                    red_button.setOnClickListener(null);
+                }  else {
+                    /// Subtracts GREEN
+                    int new_color = Color.rgb(
+                            playShapeColor.getRed(),
+                            playShapeColor.stepGreen(playShapeColor.getGreen()),
+                            playShapeColor.getBlue()
+                    );
+                    play_shape.setBackgroundColor(new_color);
+                    colorHistory.push(new_color);
+                    checkIfSolved(new_color, game);
+                }
 
-                /*
-                Users can only go 30 past the R G or B value of the target color.
-
-                Once they go 30 past any of those values, they are given the option to reverse
-                the steps up to twenty before the color value.
-
-                Example: if the R value of a target color is 50, a user can go to R value 20
-                at which point they are given the option to go to up to R value 80.
-
-                At R value 20, a reverse logo appears in the button.
-
-                At r value 80, the reverse logo disappears.
-                 */
-
-
-                /// Subtracts GREEN
-                int new_color = Color.rgb(
-                        playShapeColor.getRed(),
-                        playShapeColor.stepGreen(playShapeColor.getGreen()),
-                        playShapeColor.getBlue()
-                );
-                play_shape.setBackgroundColor(new_color);
-                // // TODO: 5/3/17 Add the new color to the history list
-                colorHistory.push(new_color);
             }
         });
+
 
         blue_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                /// Subtracts RED
-                int new_color = Color.rgb(
-                        playShapeColor.stepRed(playShapeColor.getRed()),
-                        playShapeColor.getGreen(),
-                        playShapeColor.getBlue()
-                );
-                play_shape.setBackgroundColor(new_color);
-                colorHistory.push(new_color);
+                if(has_won == 1) {
+                    blue_button.setOnClickListener(null);
+                }  else {
+                    /// Subtracts RED
+                    int new_color = Color.rgb(
+                            playShapeColor.stepRed(playShapeColor.getRed()),
+                            playShapeColor.getGreen(),
+                            playShapeColor.getBlue()
+                    );
+                    play_shape.setBackgroundColor(new_color);
+                    colorHistory.push(new_color);
+                    checkIfSolved(new_color, game);
+                }
+
             }
         });
 
         yellow_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(has_won == 1) {
+                    yellow_button.setOnClickListener(null);
+                }  else {
+                    /// Subtracts BLUE
+                    int new_color = Color.rgb(
+                            playShapeColor.getRed(),
+                            playShapeColor.getGreen(),
+                            playShapeColor.stepBlue(playShapeColor.getBlue())
+                    );
 
-                /// Subtracts BLUE
-                int new_color = Color.rgb(
-                                playShapeColor.getRed(),
-                                playShapeColor.getGreen(),
-                                playShapeColor.stepBlue(playShapeColor.getBlue())
-                        );
-
-                play_shape.setBackgroundColor(new_color);
-                colorHistory.push(new_color);
-
+                    play_shape.setBackgroundColor(new_color);
+                    colorHistory.push(new_color);
+                    checkIfSolved(new_color, game);
+                }
 
             }
         });
@@ -278,13 +280,32 @@ public class GameScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // go back X amount in hisotry and set the color of the play shape to that
                 // Get size of history
-                int history_size = colorHistory.size() - 5;
-                int newUndoColor = colorHistory.get(history_size);
-                colorHistory.removeAllElements();
-                play_shape.setBackgroundColor(newUndoColor);
-                // // TODO: 5/4/17 reset the actual color object with the new undone color, otherwise the next time a user presses the color button, that colr will just jump back to where it was.
-                // TODO animate the undo button into the screen
 
+                if(colorHistory.size() >= 5){
+                    final Animation animSpin = AnimationUtils.loadAnimation(GameScreenActivity.this, R.anim.spin_undo_glyph);
+                    undo_button.startAnimation(animSpin);
+                    int history_size = colorHistory.size() - 5;
+                    Log.e("the history size is ", String.valueOf(history_size));
+                    int newUndoColor = colorHistory.get(history_size);
+                    colorHistory.removeAllElements();
+                    playShapeColor.undoColor(newUndoColor);
+                    play_shape.setBackgroundColor(newUndoColor);
+                    colorHistory.push(newUndoColor);
+
+
+                } else if (colorHistory.size() > 1) {
+                    final Animation animSpin = AnimationUtils.loadAnimation(GameScreenActivity.this, R.anim.spin_undo_glyph);
+                    undo_button.startAnimation(animSpin);
+                    int newUndoColor = colorHistory.get(0);
+                    colorHistory.removeAllElements();
+                    playShapeColor.undoColor(newUndoColor);
+                    play_shape.setBackgroundColor(newUndoColor);
+                    colorHistory.push(newUndoColor);
+                } else {
+                    final Animation animShake = AnimationUtils.loadAnimation(GameScreenActivity.this, R.anim.wobble_undo_glyph);
+                    undo_button.startAnimation(animShake);
+
+                }
             }
         });
 
@@ -314,10 +335,42 @@ public class GameScreenActivity extends AppCompatActivity {
     //// Set play shape animations
 
 
-        ScaleAnimation scale_animation = new ScaleAnimation(5, 5, 5, 5, Animation.RELATIVE_TO_SELF, .5F, Animation.RELATIVE_TO_SELF, .5F);
-        scale_animation.setDuration(20000);
+
+
+        ScaleAnimation scale_animation = new ScaleAnimation(15, 0, 15, 0, Animation.RELATIVE_TO_SELF, .5F, Animation.RELATIVE_TO_SELF, .5F);
+        scale_animation.setDuration(15000);
         scale_animation.setRepeatCount(0);
-        scale_animation.setStartOffset(1000);
+        scale_animation.setStartOffset(0);
+        scale_animation.setInterpolator(new LinearOutSlowInInterpolator());
+
+
+        scale_animation.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // TODO Auto-generated method stub
+               play_shape.setVisibility(GONE);
+               finishGame(false);
+
+
+            }
+        });
+
+
+
+
         play_shape.startAnimation(scale_animation);
 
 
@@ -329,10 +382,59 @@ public class GameScreenActivity extends AppCompatActivity {
 
     }
 
+    public void checkIfSolved(int new_color, GameInstance game) {
+        double contrast = ColorUtils.calculateContrast(new_color, ContextCompat.getColor(this, game.getTargetColor()));
+        final ImageView play_shape = (ImageView) findViewById(R.id.playshape);
+        Log.e("new color is ", String.valueOf(new_color));
+        Log.e("target color is ", String.valueOf(ContextCompat.getColor(this, game.getTargetColor())));
+        Log.e("target color is ", String.valueOf(ContextCompat.getColor(this, game.getTargetColor())));
+
+//        Log.e("percentage ", String.valueOf((abs(((double) (new_color)) / ((double) ContextCompat.getColor(this, game.getTargetColor())) ))));
+        Log.e("contrast is ", String.valueOf(contrast));
+        // count as complete if it's within 10% of the avlue
+        if (ColorUtils.calculateContrast(new_color, ContextCompat.getColor(this, game.getTargetColor())) <= 1.01){
+            play_shape.setVisibility(GONE);
+            finishGame(true);
+
+        } else {
+        }
+    }
+
+    public void finishGame(boolean won) {
+        final Button restart_button = (Button) findViewById(R.id.restart_button);
+        if (won == true) {
+            has_won = 1;
+            restart_button.setText("Nice. Play again?");
+        } else {
+            if (has_won != 1) {
+                restart_button.setText("Try again?");
+            }
+        }
+        animateButtonsOffScreen();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                restart_button.setVisibility(View.VISIBLE);
+                restart_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        restart_activity();
+                    }
+                });
+
+            }
+        }, 500);
+
+
+
+
+    }
     public void animateButtonsIntoScreen() {
         View yellow_button = findViewById(R.id.yellow_button);
         View red_button = findViewById(R.id.red_button);
         View blue_button = findViewById(R.id.blue_button);
+        View undo_button = findViewById(R.id.undo_button);
 
         TranslateAnimation enterScreenBlue = new TranslateAnimation(
                 Animation.ABSOLUTE, 0F,
@@ -358,6 +460,17 @@ public class GameScreenActivity extends AppCompatActivity {
 
         );
 
+        TranslateAnimation enterScreenUndo = new TranslateAnimation(
+                Animation.ABSOLUTE, 0F,
+                Animation.ABSOLUTE, 0F,
+                Animation.RELATIVE_TO_SELF, 2.5F,
+                Animation.RELATIVE_TO_SELF, 0F
+
+        );
+
+
+
+
         enterScreenBlue.setStartOffset(650);
         enterScreenYellow.setStartOffset(700);
         enterScreenRed.setStartOffset(750);
@@ -368,11 +481,80 @@ public class GameScreenActivity extends AppCompatActivity {
         enterScreenYellow.setInterpolator(new LinearOutSlowInInterpolator());
         enterScreenRed.setInterpolator(new LinearOutSlowInInterpolator());
 
-
         yellow_button.startAnimation(enterScreenYellow);
         red_button.startAnimation(enterScreenRed);
         blue_button.startAnimation(enterScreenBlue);
 
+        ScaleAnimation undo_button_scale = new ScaleAnimation(0, 1, 0, 1, Animation.RELATIVE_TO_SELF, .5F, Animation.RELATIVE_TO_SELF, .5F);
+        undo_button_scale.setDuration(600);
+        undo_button_scale.setRepeatCount(0);
+        undo_button_scale.setStartOffset(1000);
+        undo_button_scale.setInterpolator(new BounceInterpolator());
+        undo_button.startAnimation(undo_button_scale);
+
+    }
+
+    public void animateButtonsOffScreen() {
+        View yellow_button = findViewById(R.id.yellow_button);
+        View red_button = findViewById(R.id.red_button);
+        View blue_button = findViewById(R.id.blue_button);
+        View undo_button = findViewById(R.id.undo_button);
+
+
+        TranslateAnimation exitScreenBlue = new TranslateAnimation(
+                Animation.ABSOLUTE, 0F,
+                Animation.ABSOLUTE, 0F,
+                Animation.RELATIVE_TO_SELF, 0F,
+                Animation.RELATIVE_TO_SELF, 2.5F
+
+        );
+
+        TranslateAnimation exitScreenYellow = new TranslateAnimation(
+                Animation.ABSOLUTE, 0F,
+                Animation.ABSOLUTE, 0F,
+                Animation.RELATIVE_TO_SELF, 0F,
+                Animation.RELATIVE_TO_SELF, 2.5F
+
+        );
+
+        TranslateAnimation exitScreenRed = new TranslateAnimation(
+                Animation.ABSOLUTE, 0F,
+                Animation.ABSOLUTE, 0F,
+                Animation.RELATIVE_TO_SELF, 0F,
+                Animation.RELATIVE_TO_SELF, 2.5F
+
+        );
+
+
+        exitScreenBlue.setStartOffset(650);
+        exitScreenYellow.setStartOffset(700);
+        exitScreenRed.setStartOffset(750);
+        exitScreenBlue.setDuration(300);
+        exitScreenYellow.setDuration(250);
+        exitScreenRed.setDuration(300);
+        exitScreenBlue.setInterpolator(new LinearOutSlowInInterpolator());
+        exitScreenYellow.setInterpolator(new LinearOutSlowInInterpolator());
+        exitScreenRed.setInterpolator(new LinearOutSlowInInterpolator());
+
+
+        ScaleAnimation undo_button_scale = new ScaleAnimation(1, 0, 1, 0, Animation.RELATIVE_TO_SELF, .5F, Animation.RELATIVE_TO_SELF, .5F);
+        undo_button_scale.setDuration(300);
+        undo_button_scale.setRepeatCount(0);
+        undo_button_scale.setInterpolator(new BounceInterpolator());
+
+        yellow_button.setVisibility(GONE);
+        red_button.setVisibility(GONE);
+        blue_button.setVisibility(GONE);
+        undo_button.setVisibility(GONE);
+
+
+
+
+    }
+
+    public void restart_activity()
+    {
+        this.recreate();
     }
 
     @Override

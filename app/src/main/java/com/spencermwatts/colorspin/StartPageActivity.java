@@ -67,7 +67,7 @@ public class StartPageActivity extends AppCompatActivity {
         /**
          * Set up the animation for the color buttons
          */
-        //// TODO: 4/30/17 Create jiggle animation for three buttons
+        //// TODO: 4/30/17 Create spin_undo_glyph animation for three buttons
 
 
         final RelativeLayout button_container = (RelativeLayout)findViewById(R.id.button_container);
@@ -77,7 +77,7 @@ public class StartPageActivity extends AppCompatActivity {
         rotation_animation.start();
 
 
-        final Button start_button = (Button)findViewById(R.id.start_button);
+        final View start_button = (View)findViewById(R.id.start_button);
 
         final Pair<View, String> p1 = Pair.create((View) findViewById(R.id.yellow_button), "yellow_button_transition");
         final Pair<View, String> p2 = Pair.create((View) findViewById(R.id.blue_button), "blue_button_transition");

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#EBEBEB"
     android:id="@+id/gamescreen"
-
+    android:animateLayoutChanges="true"
     tools:context="com.spencermwatts.colorspin.GameScreenActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -62,7 +62,7 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/undo_button"
-        app:layout_constraintBottom_toTopOf="@id/red_button"
+        app:layout_constraintBottom_toTopOf="@+id/red_button"
         app:layout_constraintDimensionRatio="1:1"
         android:layout_marginBottom="24dp"
         android:layout_marginRight="36dp"
@@ -76,7 +76,8 @@
         android:clickable="true"
         app:backgroundTint="@color/dark_grey"
         android:src="@drawable/ic_replay_black_24dp"
-        app:fabSize="mini"/>
+        app:fabSize="mini"
+        android:layout_marginEnd="36dp" />
 
     <ImageView
         android:layout_width="64dp"
@@ -97,6 +98,25 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
     </android.support.constraint.ConstraintLayout>
+
+    <Button
+        android:text="one more time?"
+        android:textSize="30dp"
+        android:padding="24dp"
+        android:fontFamily="fontFamily: sans-serif-thin"
+        android:textColor="@color/light_grey"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/restart_button"
+        android:background="@drawable/start_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:elevation="5dp" />
 
 
 </android.support.constraint.ConstraintLayout>
