@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
@@ -18,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
@@ -30,14 +32,16 @@ import java.util.Stack;
 
 import static android.view.View.GONE;
 import static java.lang.Math.abs;
+import static java.lang.Math.sqrt;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 public class GameScreenActivity extends AppCompatActivity {
-
-
+    /**
+     * Duration of game in millisecons
+     */
+    private int game_time = 17000;
+    /**
+     * has_won == 1 when the game has been one, else null
+     */
     private int has_won;
     /**
      * Create a stack to hold the history of color changes
@@ -121,28 +125,12 @@ public class GameScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        ///// Hide the button start game again button
-
-
-
-
-
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_game_screen);
-
         mVisible = true;
-//        mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.gamescreen);
-
-
-
         currentApiVersion = android.os.Build.VERSION.SDK_INT;
-
         final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -176,29 +164,17 @@ public class GameScreenActivity extends AppCompatActivity {
         }
 
 
-        /////// Set up colors with GameInstance object ////////////////////////////////////////////
-
+        /**
+         * Set up the target color with new GameInstance object & set background color accordingly
+         */
         final GameInstance game = new GameInstance();
-
-
-        Log.e("BACKGROUND IS  " , String.valueOf(Integer.toHexString(getColor(game.getTargetColor()))));
         mContentView.setBackgroundColor(getColor(game.getTargetColor()));
-        // Put the
 
-
-
-
-        /////// Set On Click Listeners for buttons ////////////////////////////////////////////////
-
-        final ImageView play_shape = (ImageView) findViewById(R.id.playshape);
-
-        final Button red_button = (Button)findViewById(R.id.red_button);
-        final Button yellow_button = (Button)findViewById(R.id.yellow_button);
-        final Button blue_button = (Button)findViewById(R.id.blue_button);
-        final FloatingActionButton undo_button = (FloatingActionButton)findViewById(R.id.undo_button);
-
-        // todo change the color of the reverse arrow and animate it
+        /**
+         * Set up play shape color & add that color to the color history stack
+         */
         final ColorObject playShapeColor = new ColorObject();
+        final ImageView play_shape = (ImageView) findViewById(R.id.playshape);
 
         // Make a variable that holds the white value for the initial shape color
         int initial_color = Color.rgb(
@@ -210,6 +186,15 @@ public class GameScreenActivity extends AppCompatActivity {
         play_shape.setBackgroundColor(initial_color);
         // Add that color to the history of the shape
         colorHistory.push(initial_color);
+
+        /**
+         * Set On Click Listeners for buttons
+         */
+
+        final Button red_button = (Button)findViewById(R.id.red_button);
+        final Button yellow_button = (Button)findViewById(R.id.yellow_button);
+        final Button blue_button = (Button)findViewById(R.id.blue_button);
+        final FloatingActionButton undo_button = (FloatingActionButton)findViewById(R.id.undo_button);
 
         red_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -231,7 +216,6 @@ public class GameScreenActivity extends AppCompatActivity {
 
             }
         });
-
 
         blue_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,26 +265,16 @@ public class GameScreenActivity extends AppCompatActivity {
                 // go back X amount in hisotry and set the color of the play shape to that
                 // Get size of history
 
-                if(colorHistory.size() >= 5){
+                if(colorHistory.size() > 0){
                     final Animation animSpin = AnimationUtils.loadAnimation(GameScreenActivity.this, R.anim.spin_undo_glyph);
                     undo_button.startAnimation(animSpin);
-                    int history_size = colorHistory.size() - 5;
-                    Log.e("the history size is ", String.valueOf(history_size));
-                    int newUndoColor = colorHistory.get(history_size);
-                    colorHistory.removeAllElements();
+                    Log.e("the history size is ", String.valueOf(colorHistory.size()));
+                    int newUndoColor = colorHistory.pop();
+//                    colorHistory.removeAllElements();
                     playShapeColor.undoColor(newUndoColor);
                     play_shape.setBackgroundColor(newUndoColor);
-                    colorHistory.push(newUndoColor);
+//                    colorHistory.push(newUndoColor);
 
-
-                } else if (colorHistory.size() > 1) {
-                    final Animation animSpin = AnimationUtils.loadAnimation(GameScreenActivity.this, R.anim.spin_undo_glyph);
-                    undo_button.startAnimation(animSpin);
-                    int newUndoColor = colorHistory.get(0);
-                    colorHistory.removeAllElements();
-                    playShapeColor.undoColor(newUndoColor);
-                    play_shape.setBackgroundColor(newUndoColor);
-                    colorHistory.push(newUndoColor);
                 } else {
                     final Animation animShake = AnimationUtils.loadAnimation(GameScreenActivity.this, R.anim.wobble_undo_glyph);
                     undo_button.startAnimation(animShake);
@@ -309,46 +283,21 @@ public class GameScreenActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Set up play shape animation
+         */
 
-
-
-    //// Set onclick listener to make the play shape a back button for testing purposes
-        play_shape.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent go_back_home = new Intent(GameScreenActivity.this, StartPageActivity.class);
-
-                // Comment back in the next two lines in order for the three logo orbs to transition to the next activity
-//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(StartPageActivity.this, p1, p2, p3);
-//                StartPageActivity.this.startActivity(start_game, options.toBundle());
-                GameScreenActivity.this.startActivity(go_back_home);
-
-            }
-        });
-
-        ///////////////////////////////////////////////////////////////////////////////////////////
-
-
-    //// Set animation for buttons entering screen
-        animateButtonsIntoScreen();
-
-    //// Set play shape animations
-
-
-
-
-        ScaleAnimation scale_animation = new ScaleAnimation(15, 0, 15, 0, Animation.RELATIVE_TO_SELF, .5F, Animation.RELATIVE_TO_SELF, .5F);
-        scale_animation.setDuration(15000);
+        ScaleAnimation scale_animation = new ScaleAnimation(11, 0, 11, 0, Animation.RELATIVE_TO_SELF, .5F, Animation.RELATIVE_TO_SELF, .5F);
+        scale_animation.setDuration(game_time);
         scale_animation.setRepeatCount(0);
         scale_animation.setStartOffset(0);
-        scale_animation.setInterpolator(new LinearOutSlowInInterpolator());
-
-
+        scale_animation.setInterpolator(new AccelerateInterpolator());
         scale_animation.setAnimationListener(new Animation.AnimationListener() {
 
             @Override
             public void onAnimationStart(Animation animation) {
                 // TODO Auto-generated method stub
+                animateButtonsIntoScreen();
 
             }
 
@@ -368,32 +317,59 @@ public class GameScreenActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         play_shape.startAnimation(scale_animation);
-
-
         AnimatorSet rotation_animation = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.logo_spin);
         rotation_animation.setTarget(play_shape);
         rotation_animation.start();
 
-
-
     }
 
-    public void checkIfSolved(int new_color, GameInstance game) {
-        double contrast = ColorUtils.calculateContrast(new_color, ContextCompat.getColor(this, game.getTargetColor()));
-        final ImageView play_shape = (ImageView) findViewById(R.id.playshape);
-        Log.e("new color is ", String.valueOf(new_color));
-        Log.e("target color is ", String.valueOf(ContextCompat.getColor(this, game.getTargetColor())));
-        Log.e("target color is ", String.valueOf(ContextCompat.getColor(this, game.getTargetColor())));
 
-//        Log.e("percentage ", String.valueOf((abs(((double) (new_color)) / ((double) ContextCompat.getColor(this, game.getTargetColor())) ))));
-        Log.e("contrast is ", String.valueOf(contrast));
-        // count as complete if it's within 10% of the avlue
-        if (ColorUtils.calculateContrast(new_color, ContextCompat.getColor(this, game.getTargetColor())) <= 1.01){
-            play_shape.setVisibility(GONE);
+
+    public void checkIfSolved(int new_color, GameInstance game) {
+        final ImageView play_shape = (ImageView) findViewById(R.id.playshape);
+//        Log.e("new color is ", String.valueOf(new_color));
+//        Log.e("color int from R id ", String.valueOf(ContextCompat.getColor(this, game.getTargetColor())));
+
+        int game_target_color = ContextCompat.getColor(this, game.getTargetColor());
+
+        int r1 = Color.red(game_target_color);
+        int g1 = Color.green(game_target_color);
+        int b1 = Color.blue(game_target_color);
+
+        int r2 = Color.red(new_color);
+        int g2 = Color.green(new_color);
+        int b2 = Color.blue(new_color);
+
+        int threshold = 10;
+        int red_diff = abs(r1-r2);
+        int green_diff = abs(g1-g2);
+        int blue_diff = abs(b1-b2);
+
+        double d = sqrt((1*(r2-r1)^2)+(1*(g2-g1)^2)+(1*(b2-b1)^2));
+        double diff = abs((r2-r1)) + abs((g2-g1)) + abs((g2-g1));
+        double percentage = d/sqrt((255)^2+(255)^2+(255)^2);
+
+//
+//        Log.e("new color green ", String.valueOf(Color.green(new_color)));
+//        Log.e("target green ", String.valueOf(Color.green(ContextCompat.getColor(this, game.getTargetColor()))));
+//
+//        Log.e("new color red ", String.valueOf(Color.red(new_color)));
+//        Log.e("target red ", String.valueOf(Color.red(ContextCompat.getColor(this, game.getTargetColor()))));
+//
+//        Log.e("new color blue ", String.valueOf(Color.blue(new_color)));
+//        Log.e("target blue ", String.valueOf(Color.blue(ContextCompat.getColor(this, game.getTargetColor()))));
+
+        Log.e("red diff  ", String.valueOf(red_diff));
+        Log.e("green diff  ", String.valueOf(green_diff));
+        Log.e("blue diff  ", String.valueOf(blue_diff));
+
+
+//        double match_ratio =  new_color / ContextCompat.getColor(this, game.getTargetColor());
+
+//        play_shape.setBackgroundColor(game.getTargetColor());
+        if (red_diff <= threshold && blue_diff <= threshold && green_diff <= threshold){
+//            play_shape.setBackgroundColor(game.getTargetColor());
             finishGame(true);
 
         } else {
@@ -468,9 +444,6 @@ public class GameScreenActivity extends AppCompatActivity {
 
         );
 
-
-
-
         enterScreenBlue.setStartOffset(650);
         enterScreenYellow.setStartOffset(700);
         enterScreenRed.setStartOffset(750);
@@ -499,6 +472,7 @@ public class GameScreenActivity extends AppCompatActivity {
         View red_button = findViewById(R.id.red_button);
         View blue_button = findViewById(R.id.blue_button);
         View undo_button = findViewById(R.id.undo_button);
+        View shim = findViewById(R.id.shim);
 
 
         TranslateAnimation exitScreenBlue = new TranslateAnimation(
@@ -546,9 +520,7 @@ public class GameScreenActivity extends AppCompatActivity {
         red_button.setVisibility(GONE);
         blue_button.setVisibility(GONE);
         undo_button.setVisibility(GONE);
-
-
-
+        shim.setVisibility(View.INVISIBLE);
 
     }
 
@@ -605,4 +577,3 @@ public class GameScreenActivity extends AppCompatActivity {
     }
 }
 
-// TODO: 4/30/17 Create shim for behind buttons

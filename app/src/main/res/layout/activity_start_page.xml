@@ -57,23 +57,23 @@
             android:layout_marginLeft="80dp"
             android:layout_marginTop="5dp"
             android:elevation="10dp"
-            android:transitionName="yellow_button_transition"
             android:stateListAnimator="@animator/button_animator_no_press"
             />
 
 
     </RelativeLayout>
     <View
-        android:fontFamily="sans-serif-thin"
         android:id="@+id/start_button"
         android:layout_height="64dp"
         android:layout_width="64dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/ic_play_arrow_black_24dp"
+        android:src="@drawable/ic_play_arrow_black_24dp"
         android:layout_alignBottom="@id/button_container"
-        android:layout_marginBottom="24dp"
-
+        android:layout_marginBottom="64dp"
         android:elevation="15dp"
          />
+
+    <!--Give the play button a drop shadow-->
+
 </RelativeLayout>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Color Spin</string>
+    <string name="app_name">Color Match</string>
 
     <string name="title_activity_game_screen">GameScreen</string>
     <string name="dummy_button">Dummy Button</string>

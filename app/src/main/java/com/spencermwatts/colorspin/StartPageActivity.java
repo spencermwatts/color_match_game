@@ -58,17 +58,11 @@ public class StartPageActivity extends AppCompatActivity {
                     });
         }
 
-        /////////
-
         setContentView(R.layout.activity_start_page);
-
-
 
         /**
          * Set up the animation for the color buttons
          */
-        //// TODO: 4/30/17 Create spin_undo_glyph animation for three buttons
-
 
         final RelativeLayout button_container = (RelativeLayout)findViewById(R.id.button_container);
 
@@ -76,28 +70,15 @@ public class StartPageActivity extends AppCompatActivity {
         rotation_animation.setTarget(button_container);
         rotation_animation.start();
 
-
-        final View start_button = (View)findViewById(R.id.start_button);
-
-        final Pair<View, String> p1 = Pair.create((View) findViewById(R.id.yellow_button), "yellow_button_transition");
-        final Pair<View, String> p2 = Pair.create((View) findViewById(R.id.blue_button), "blue_button_transition");
-        final Pair<View, String> p3 = Pair.create((View) findViewById(R.id.red_button), "red_button_transition");
-//
-
-
         /**
-         * End animation for the color buttons
+         * Set up onclick listener for start button
          */
 
-
+        View start_button = (View)findViewById(R.id.start_button);
         start_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent start_game = new Intent(StartPageActivity.this, GameScreenActivity.class);
-
-                // Comment back in the next two lines in order for the three logo orbs to transition to the next activity
-//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(StartPageActivity.this, p1, p2, p3);
-//                StartPageActivity.this.startActivity(start_game, options.toBundle());
                 StartPageActivity.this.startActivity(start_game);
 
                             }
@@ -106,4 +87,3 @@ public class StartPageActivity extends AppCompatActivity {
 
 }
 
-// TODO: 5/1/17 https://github.com/dynamitechetan/Flowing-Gradient
