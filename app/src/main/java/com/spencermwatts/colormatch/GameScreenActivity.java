@@ -1,14 +1,11 @@
-package com.spencermwatts.colorspin;
+package com.spencermwatts.colormatch;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,15 +25,19 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import java.util.Stack;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.util.Stack;
 import static android.view.View.GONE;
 import static java.lang.Math.abs;
-import static java.lang.Math.sqrt;
 
 public class GameScreenActivity extends AppCompatActivity {
     /**
-     * Duration of game in millisecons
+     * Declare Firebase analytics
+     */
+    private FirebaseAnalytics mFirebaseAnalytics;
+    /**
+     * Duration of game in milliseconds
      */
     private int game_time = 17000;
     /**
@@ -125,6 +126,10 @@ public class GameScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_game_screen);
@@ -199,7 +204,7 @@ public class GameScreenActivity extends AppCompatActivity {
         red_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mFirebaseAnalytics.logEvent("press_red", null);
                 if(has_won == 1) {
                     red_button.setOnClickListener(null);
                 }  else {
@@ -220,6 +225,7 @@ public class GameScreenActivity extends AppCompatActivity {
         blue_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mFirebaseAnalytics.logEvent("press_blue", null);
 
                 if(has_won == 1) {
                     blue_button.setOnClickListener(null);
@@ -241,6 +247,7 @@ public class GameScreenActivity extends AppCompatActivity {
         yellow_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mFirebaseAnalytics.logEvent("press_yellow", null);
                 if(has_won == 1) {
                     yellow_button.setOnClickListener(null);
                 }  else {
@@ -264,18 +271,23 @@ public class GameScreenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // go back X amount in hisotry and set the color of the play shape to that
                 // Get size of history
+                mFirebaseAnalytics.logEvent("press_undo", null);
 
-                if(colorHistory.size() > 0){
+                if(colorHistory.size() > 2){
+                    mFirebaseAnalytics.logEvent("undo_successful", null);
+
                     final Animation animSpin = AnimationUtils.loadAnimation(GameScreenActivity.this, R.anim.spin_undo_glyph);
                     undo_button.startAnimation(animSpin);
                     Log.e("the history size is ", String.valueOf(colorHistory.size()));
+                    colorHistory.pop();
                     int newUndoColor = colorHistory.pop();
-//                    colorHistory.removeAllElements();
                     playShapeColor.undoColor(newUndoColor);
                     play_shape.setBackgroundColor(newUndoColor);
 //                    colorHistory.push(newUndoColor);
 
                 } else {
+                    mFirebaseAnalytics.logEvent("undo_unsuccessful", null);
+
                     final Animation animShake = AnimationUtils.loadAnimation(GameScreenActivity.this, R.anim.wobble_undo_glyph);
                     undo_button.startAnimation(animShake);
 
@@ -311,7 +323,7 @@ public class GameScreenActivity extends AppCompatActivity {
             public void onAnimationEnd(Animation animation) {
                 // TODO Auto-generated method stub
                play_shape.setVisibility(GONE);
-               finishGame(false);
+               finishGame(false, game);
 
 
             }
@@ -328,8 +340,6 @@ public class GameScreenActivity extends AppCompatActivity {
 
     public void checkIfSolved(int new_color, GameInstance game) {
         final ImageView play_shape = (ImageView) findViewById(R.id.playshape);
-//        Log.e("new color is ", String.valueOf(new_color));
-//        Log.e("color int from R id ", String.valueOf(ContextCompat.getColor(this, game.getTargetColor())));
 
         int game_target_color = ContextCompat.getColor(this, game.getTargetColor());
 
@@ -341,50 +351,34 @@ public class GameScreenActivity extends AppCompatActivity {
         int g2 = Color.green(new_color);
         int b2 = Color.blue(new_color);
 
-        int threshold = 10;
+        int threshold = 20;
         int red_diff = abs(r1-r2);
         int green_diff = abs(g1-g2);
         int blue_diff = abs(b1-b2);
-
-        double d = sqrt((1*(r2-r1)^2)+(1*(g2-g1)^2)+(1*(b2-b1)^2));
-        double diff = abs((r2-r1)) + abs((g2-g1)) + abs((g2-g1));
-        double percentage = d/sqrt((255)^2+(255)^2+(255)^2);
-
-//
-//        Log.e("new color green ", String.valueOf(Color.green(new_color)));
-//        Log.e("target green ", String.valueOf(Color.green(ContextCompat.getColor(this, game.getTargetColor()))));
-//
-//        Log.e("new color red ", String.valueOf(Color.red(new_color)));
-//        Log.e("target red ", String.valueOf(Color.red(ContextCompat.getColor(this, game.getTargetColor()))));
-//
-//        Log.e("new color blue ", String.valueOf(Color.blue(new_color)));
-//        Log.e("target blue ", String.valueOf(Color.blue(ContextCompat.getColor(this, game.getTargetColor()))));
 
         Log.e("red diff  ", String.valueOf(red_diff));
         Log.e("green diff  ", String.valueOf(green_diff));
         Log.e("blue diff  ", String.valueOf(blue_diff));
 
-
-//        double match_ratio =  new_color / ContextCompat.getColor(this, game.getTargetColor());
-
-//        play_shape.setBackgroundColor(game.getTargetColor());
         if (red_diff <= threshold && blue_diff <= threshold && green_diff <= threshold){
-//            play_shape.setBackgroundColor(game.getTargetColor());
-            finishGame(true);
+            play_shape.setBackgroundColor(ContextCompat.getColor(this, game.getTargetColor()));
+            finishGame(true, game);
 
-        } else {
         }
     }
 
-    public void finishGame(boolean won) {
+    public void finishGame(boolean won, GameInstance game) {
         final Button restart_button = (Button) findViewById(R.id.restart_button);
-        if (won == true) {
+        Bundle bundle = new Bundle();
+        bundle.putString("background_color", String.valueOf(ContextCompat.getColor(this, game.getTargetColor())));
+
+        if (won) {
             has_won = 1;
-            restart_button.setText("Nice. Play again?");
+            mFirebaseAnalytics.logEvent("user_won", bundle);
+            restart_button.setText(R.string.good_job);
         } else {
-            if (has_won != 1) {
-                restart_button.setText("Try again?");
-            }
+            mFirebaseAnalytics.logEvent("user_lost", bundle);
+            restart_button.setText(R.string.try_again);
         }
         animateButtonsOffScreen();
         final Handler handler = new Handler();
@@ -395,6 +389,7 @@ public class GameScreenActivity extends AppCompatActivity {
                 restart_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        mFirebaseAnalytics.logEvent("try_again_clicked", null);
                         restart_activity();
                     }
                 });
@@ -436,13 +431,6 @@ public class GameScreenActivity extends AppCompatActivity {
 
         );
 
-        TranslateAnimation enterScreenUndo = new TranslateAnimation(
-                Animation.ABSOLUTE, 0F,
-                Animation.ABSOLUTE, 0F,
-                Animation.RELATIVE_TO_SELF, 2.5F,
-                Animation.RELATIVE_TO_SELF, 0F
-
-        );
 
         enterScreenBlue.setStartOffset(650);
         enterScreenYellow.setStartOffset(700);

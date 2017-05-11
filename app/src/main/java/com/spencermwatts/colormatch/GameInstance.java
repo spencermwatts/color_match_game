@@ -1,6 +1,4 @@
-package com.spencermwatts.colorspin;
-
-import android.content.Context;
+package com.spencermwatts.colormatch;
 
 import java.util.Random;
 

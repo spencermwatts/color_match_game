@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.spencermwatts.colorspin">
-    `
+    package="com.spencermwatts.colormatch">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE">
+    </uses-permission>
+    <uses-permission android:name="android.permission.WAKE_LOCK">
+    </uses-permission>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
-            android:name=".StartPageActivity"
+            android:name="com.spencermwatts.colormatch.StartPageActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden"
             >
@@ -20,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GameScreenActivity"
+            android:name="com.spencermwatts.colormatch.GameScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_game_screen"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"

@@ -5,4 +5,7 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="yellow_transition">yellow_transition</string>
+    <string name="try_again">Try Again?</string>
+    <string name="good_job">"Good job\nOne more time?"</string>
+
 </resources>

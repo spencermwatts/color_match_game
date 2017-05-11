@@ -17,7 +17,7 @@
     <color name="dark_green">#3CC896</color>
     <color name="dark_teal">#1EA0BE</color>
     <color name="dark_purple">#5050AA</color>
-    <color name="dark_gold">#FF9B00</color>
+    <color name="dark_gold">#FA9600</color>
     <color name="dark_red">#E63C3C</color>
 
     <color name="core_green">#3CE6B4</color>
@@ -27,10 +27,10 @@
     <color name="core_red">#FA646E</color>
 
     <color name="bright_green">#3CFAD2</color>
-    <color name="bright_teal">#00D2FF</color>
+    <color name="bright_teal">#00D2FA</color>
     <color name="bright_purple">#A078FA</color>
     <color name="bright_gold">#FAD200</color>
-    <color name="bright_red">#FF6E96</color>
+    <color name="bright_red">#FA6E96</color>
 
     <color name="medium_green">#A0FAE6</color>
     <color name="medium_teal">#82E6FA</color>

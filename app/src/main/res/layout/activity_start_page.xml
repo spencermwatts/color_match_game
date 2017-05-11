@@ -10,7 +10,7 @@
     android:background="@drawable/sweep_gradient"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:clipToPadding="false"
-    tools:context="com.spencermwatts.colorspin.StartPageActivity">
+    tools:context="com.spencermwatts.colormatch.StartPageActivity">
 
 
 
@@ -62,18 +62,20 @@
 
 
     </RelativeLayout>
-    <View
+    <Button
+        android:textSize="24sp"
+        android:padding="12dp"
+        android:layout_margin="64dp"
+        android:fontFamily="fontFamily: sans-serif-thin"
+        android:textColor="@color/light_grey"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/start_button"
-        android:layout_height="64dp"
-        android:layout_width="64dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/ic_play_arrow_black_24dp"
-        android:layout_alignBottom="@id/button_container"
-        android:layout_marginBottom="64dp"
-        android:elevation="15dp"
-         />
+        android:background="@drawable/start_button"
+        android:layout_below="@id/button_container"
+        android:text="play"
+        android:layout_centerInParent="true"
+        android:elevation="5dp" />
 
-    <!--Give the play button a drop shadow-->
 
 </RelativeLayout>

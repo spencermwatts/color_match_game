@@ -1,30 +1,39 @@
-package com.spencermwatts.colorspin;
+package com.spencermwatts.colormatch;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatImageButton;
-import android.util.Pair;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
+
 public class StartPageActivity extends AppCompatActivity {
-    private int currentApiVersion;
+
+    // [START declare_analytics]
+    private FirebaseAnalytics mFirebaseAnalytics;
+    // [END declare_analytics]
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        /**
+         * Log app opens
+         */
+
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, null);
+
+//        FirebaseCrash.report(new Exception("My first Android non-fatal error"));
+
         // Make the app full screen
-        currentApiVersion = android.os.Build.VERSION.SDK_INT;
+        int currentApiVersion = android.os.Build.VERSION.SDK_INT;
 
         final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -74,10 +83,19 @@ public class StartPageActivity extends AppCompatActivity {
          * Set up onclick listener for start button
          */
 
-        View start_button = (View)findViewById(R.id.start_button);
+        Button start_button = (Button)findViewById(R.id.start_button);
+
         start_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                /**
+                 * Log "Play" button presses
+                 */
+                mFirebaseAnalytics.logEvent("press_play", null);
+
+
+
                 Intent start_game = new Intent(StartPageActivity.this, GameScreenActivity.class);
                 StartPageActivity.this.startActivity(start_game);
 

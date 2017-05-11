@@ -1,4 +1,4 @@
-package com.spencermwatts.colorspin;
+package com.spencermwatts.colormatch;
 
 import android.graphics.Color;
 

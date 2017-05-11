@@ -6,7 +6,7 @@
 
     <transitionSet   >
         <transition
-            class="com.spencermwatts.colorspin.StartPageActivity"/>
+            class="com.spencermwatts.colormatch.StartPageActivity"/>
         <targets>
             <target android:excludeId="@id/icon" /> />
         </targets>
