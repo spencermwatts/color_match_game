@@ -1,8 +1,11 @@
 package com.spencermwatts.colormatch;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.animation.AnimatorInflater;
@@ -11,6 +14,9 @@ import android.widget.RelativeLayout;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
+
+import me.toptas.fancyshowcase.FancyShowCaseView;
+import me.toptas.fancyshowcase.FocusShape;
 
 public class StartPageActivity extends AppCompatActivity {
 
@@ -83,7 +89,7 @@ public class StartPageActivity extends AppCompatActivity {
          * Set up onclick listener for start button
          */
 
-        Button start_button = (Button)findViewById(R.id.start_button);
+        final Button start_button = (Button)findViewById(R.id.start_button);
 
         start_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +107,7 @@ public class StartPageActivity extends AppCompatActivity {
 
                             }
         });
+
     }
 
 }

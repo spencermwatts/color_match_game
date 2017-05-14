@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -28,6 +29,11 @@ import android.widget.ImageView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Stack;
+
+import me.toptas.fancyshowcase.FancyShowCaseQueue;
+import me.toptas.fancyshowcase.FancyShowCaseView;
+import me.toptas.fancyshowcase.FocusShape;
+
 import static android.view.View.GONE;
 import static java.lang.Math.abs;
 
@@ -39,7 +45,7 @@ public class GameScreenActivity extends AppCompatActivity {
     /**
      * Duration of game in milliseconds
      */
-    private int game_time = 17000;
+    private int game_time = 22000;
     /**
      * has_won == 1 when the game has been one, else null
      */
@@ -173,7 +179,7 @@ public class GameScreenActivity extends AppCompatActivity {
          * Set up the target color with new GameInstance object & set background color accordingly
          */
         final GameInstance game = new GameInstance();
-        mContentView.setBackgroundColor(getColor(game.getTargetColor()));
+        mContentView.setBackgroundColor(ContextCompat.getColor(this, game.getTargetColor()));
 
         /**
          * Set up play shape color & add that color to the color history stack
@@ -323,8 +329,9 @@ public class GameScreenActivity extends AppCompatActivity {
             public void onAnimationEnd(Animation animation) {
                 // TODO Auto-generated method stub
                play_shape.setVisibility(GONE);
-               finishGame(false, game);
-
+                if(has_won != 1) {
+                    finishGame(false, game);
+                }
 
             }
         });
@@ -333,6 +340,64 @@ public class GameScreenActivity extends AppCompatActivity {
         AnimatorSet rotation_animation = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.logo_spin);
         rotation_animation.setTarget(play_shape);
         rotation_animation.start();
+
+        /* Start onboarding implementation
+            Match the rotating white
+            Press the buttons to add color to the shape
+            Use undo to correct mistakes
+            Put into separate thread because the activity uses a constraint layout
+         */
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                final View shim = (View) findViewById(R.id.shim);
+
+                FancyShowCaseView shape_goal =
+                        new FancyShowCaseView.Builder(GameScreenActivity.this)
+                                .focusOn(play_shape)
+                                .focusCircleRadiusFactor(6)
+                                .title("Match the white square to the background color")
+                                .titleStyle(R.style.onboarding_black_text, Gravity.CENTER)
+                                .showOnce("1")
+                                .build();
+                FancyShowCaseView buttons =
+                        new FancyShowCaseView.Builder(GameScreenActivity.this)
+                                .focusOn(shim)
+                                .fitSystemWindows(true)
+                                .title("Press the buttons to add color")
+                                .titleStyle(R.style.onboarding_white_text, Gravity.CENTER)
+                                .showOnce("2")
+                                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+                                .build();
+                FancyShowCaseView undo =
+                        new FancyShowCaseView.Builder(GameScreenActivity.this)
+                                .focusOn(undo_button)
+                                .fitSystemWindows(true)
+                                .focusCircleRadiusFactor(1.5)
+                                .title("Remove color with the undo button")
+                                .titleStyle(R.style.onboarding_white_text, Gravity.CENTER)
+                                .showOnce("3")
+                                .build();
+
+
+                FancyShowCaseQueue onboarding = new FancyShowCaseQueue()
+                        .add(shape_goal)
+                        .add(buttons)
+                        .add(undo);
+
+                undo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.e("SPENCER", " LAST VIEW CLICKED");
+                    }
+                });
+
+                onboarding.show();
+
+            }
+        });
+
 
     }
 
@@ -351,7 +416,7 @@ public class GameScreenActivity extends AppCompatActivity {
         int g2 = Color.green(new_color);
         int b2 = Color.blue(new_color);
 
-        int threshold = 20;
+        int threshold = 30;
         int red_diff = abs(r1-r2);
         int green_diff = abs(g1-g2);
         int blue_diff = abs(b1-b2);
